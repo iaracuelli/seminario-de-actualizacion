@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>calculadora</title>
+
+<style>
+	body {
+		font-family: Arial;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+	}
+
+	input {
+		width: 100%;
+		height: 50px;
+		font-size: 20px;
+		text-align: right;
+		margin-bottom: 10px;
+		box-sizing: border-box;
+        border-radius: 6px;
+	}
+
+	table {
+		border-spacing: 10px;
+		margin: auto;
+	}
+
+	button {
+		width: 50px;
+		height: 50px;
+		font-size: 18px;
+		border-radius: 6px;
+		border: none;
+		cursor: pointer;
+	}
+
+	.number {
+		background-color: #4a78c2;
+		box-shadow: 0px 5px #416cb1;
+		color: white;
+	}
+
+	.operator {
+		background-color: #4CAF50;
+		box-shadow: 0px 5px #439b45;
+		color: white;
+	}
+
+	.equal {
+		background-color: orange;
+		box-shadow: 0px 5px rgb(231, 154, 11);
+		color: white;
+	}
+
+	.clear-btn {
+		color: white;
+		font-weight: bold;
+		font-size: 80%;
+		background-color: red;
+		box-shadow: 0px 5px rgb(207, 1, 1);
+		width: 100%;
+		height: 39px;
+		border-radius: 6px;
+	}
+
+</style>
+
+</head>
+
+<body>
+		<!--componente-->
+		<x-calculadora></x-calculadora>
+		
+
+</body>
+
+<script>
+
+class Calculadora extends HTMLElement
+{
+	constructor()
+	{
+		//Acá hay que instanciar en primer lugar (siempre) la clase base.
+		super();
+		
+		//pantalla
+		this.screen = document.createElement("input");
+		this.screen.type = "text";
+		this.screen.disabled = true;
+
+		//botones
+        this.btn0 = document.createElement('button');
+        this.btn1 = document.createElement('button');
+        this.btn2 = document.createElement('button');
+        this.btn3 = document.createElement('button');
+        this.btn4 = document.createElement('button');
+        this.btn5 = document.createElement('button');
+        this.btn6 = document.createElement('button');
+        this.btn7 = document.createElement('button');
+        this.btn8 = document.createElement('button');
+        this.btn9 = document.createElement('button');
+        this.btnDot = document.createElement('button');
+        this.btnPlus = document.createElement('button');
+        this.btnMinus = document.createElement('button');
+        this.btnMult = document.createElement('button');
+        this.btnDiv = document.createElement('button');
+        this.btnEqual = document.createElement('button');
+        this.btnClear = document.createElement('button');
+
+        //config
+        this.btn0.innerText = '0';
+        this.btn1.innerText = '1';
+        this.btn2.innerText = '2';
+        this.btn3.innerText = '3';
+        this.btn4.innerText = '4';
+        this.btn5.innerText = '5';
+        this.btn6.innerText = '6';
+        this.btn7.innerText = '7';
+        this.btn8.innerText = '8';
+        this.btn9.innerText = '9';
+        this.btnDot.innerText = '.';
+        this.btnPlus.innerText = '+';
+        this.btnMinus.innerText = '-';
+        this.btnMult.innerText = '*';
+        this.btnDiv.innerText = '/';
+        this.btnEqual.innerText = '=';
+        this.btnClear.innerText = 'Borrar';
+		
+
+        //asigno clases a los botones para que funcione el css
+        this.btn0.className = "number";
+        this.btn1.className = "number";
+        this.btn2.className = "number";
+        this.btn3.className = "number";
+        this.btn4.className = "number";
+        this.btn5.className = "number";
+        this.btn6.className = "number";
+        this.btn7.className = "number";
+        this.btn8.className = "number";
+        this.btn9.className = "number";
+        this.btnDot.className = "number";
+
+        this.btnPlus.className = "operator";
+        this.btnMinus.className = "operator";
+        this.btnMult.className = "operator";
+        this.btnDiv.className = "operator";
+
+        this.btnEqual.className = "equal";
+
+        this.btnClear.className = "clear-btn";
+
+        //creo tabla
+        this.table = document.createElement('table');
+
+        //creo filas
+        this.row1 = document.createElement('tr');
+        this.row2 = document.createElement('tr');
+        this.row3 = document.createElement('tr');
+        this.row4 = document.createElement('tr');
+        this.row5 = document.createElement('tr');
+
+        //acomodo los botones
+        this.row1.appendChild(this.createCell(this.btn7));
+        this.row1.appendChild(this.createCell(this.btn8));
+        this.row1.appendChild(this.createCell(this.btn9));
+        this.row1.appendChild(this.createCell(this.btnPlus));
+
+        this.row2.appendChild(this.createCell(this.btn4));
+        this.row2.appendChild(this.createCell(this.btn5));
+        this.row2.appendChild(this.createCell(this.btn6));
+        this.row2.appendChild(this.createCell(this.btnMinus));
+
+        this.row3.appendChild(this.createCell(this.btn1));
+        this.row3.appendChild(this.createCell(this.btn2));
+        this.row3.appendChild(this.createCell(this.btn3));
+        this.row3.appendChild(this.createCell(this.btnMult));
+
+        this.row4.appendChild(this.createCell(this.btn0));
+        this.row4.appendChild(this.createCell(this.btnDot));
+        this.row4.appendChild(this.createCell(this.btnEqual));
+        this.row4.appendChild(this.createCell(this.btnDiv));
+
+        //aca hago que el boton clear ocupe toda la fila
+        let tdClear = document.createElement('td');
+        tdClear.colSpan = 4;
+        tdClear.appendChild(this.btnClear);
+        this.row5.appendChild(tdClear);
+
+        //agrego las filas a la tabla
+        this.table.appendChild(this.row1);
+        this.table.appendChild(this.row2);
+        this.table.appendChild(this.row3);
+        this.table.appendChild(this.row4);
+        this.table.appendChild(this.row5);
+
+        //aca se agregan los elementos al componente
+		this.appendChild(this.screen);
+        this.appendChild(this.table);
+
+	}
+
+ 
+    onBtn0Click()
+    {
+        this.screen.value += '0';
+    }
+
+    onBtn1Click()
+    {
+        this.screen.value += '1';
+    }
+
+    onBtn2Click()
+    {
+        this.screen.value += '2';
+    }
+
+    onBtn3Click()
+    {
+        this.screen.value += '3';
+    }
+
+    onBtn4Click()
+    {
+        this.screen.value += '4';
+    }
+
+    onBtn5Click()
+    {
+        this.screen.value += '5';
+    }
+
+    onBtn6Click()
+    {
+        this.screen.value += '6';
+    }
+
+    onBtn7Click()
+    {
+        this.screen.value += '7';
+    }
+
+    onBtn8Click()
+    {
+        this.screen.value += '8';
+    }
+
+    onBtn9Click()
+    {
+        this.screen.value += '9';
+    }
+
+    onBtnDotClick()
+    {
+        this.screen.value += '.';
+    }
+
+    onBtnPlusClick()
+    {
+        this.screen.value += '+';
+    }
+
+    onBtnMinusClick()
+    {
+        this.screen.value += '-';
+    }
+
+    onBtnMultClick()
+    {
+        this.screen.value += '*';
+    }
+
+    onBtnDivClick()
+    {
+        this.screen.value += '/';
+    }
+
+    onBtnEqualClick()
+    {
+        try 
+        {
+            this.screen.value = eval(this.screen.value);
+        }
+        catch
+        {
+            alert ("Error en la operación");
+            this.screen.value = "";
+        }    
+    }
+
+    onBtnClearClick()
+    {
+        this.screen.value = '';
+    }
+
+    //funcion helper
+    createCell(button)
+    {
+        let td = document.createElement('td');
+        td.appendChild(button);
+        return td;
+    }
+
+	connectedCallback()
+	{
+		console.log('Agregado al DOM');
+
+        this.btn0.onclick = this.onBtn0Click.bind(this);
+        this.btn1.onclick = this.onBtn1Click.bind(this);
+        this.btn2.onclick = this.onBtn2Click.bind(this);
+        this.btn3.onclick = this.onBtn3Click.bind(this);
+        this.btn4.onclick = this.onBtn4Click.bind(this);
+        this.btn5.onclick = this.onBtn5Click.bind(this);
+        this.btn6.onclick = this.onBtn6Click.bind(this);
+        this.btn7.onclick = this.onBtn7Click.bind(this);
+        this.btn8.onclick = this.onBtn8Click.bind(this);
+        this.btn9.onclick = this.onBtn9Click.bind(this);
+        this.btnDot.onclick = this.onBtnDotClick.bind(this);
+        this.btnPlus.onclick = this.onBtnPlusClick.bind(this);
+        this.btnMinus.onclick = this.onBtnMinusClick.bind(this);
+        this.btnMult.onclick = this.onBtnMultClick.bind(this);
+        this.btnDiv.onclick = this.onBtnDivClick.bind(this);
+        this.btnEqual.onclick = this.onBtnEqualClick.bind(this);
+        this.btnClear.onclick = this.onBtnClearClick.bind(this);
+
+	}
+
+    disconnectedCallback()
+		{
+            this.btn0.onclick = null;
+			this.btn1.onclick = null;
+			this.btn2.onclick = null;
+			this.btn3.onclick = null;
+			this.btn4.onclick = null;
+			this.btn5.onclick = null;
+			this.btn6.onclick = null;
+			this.btn7.onclick = null;
+			this.btn8.onclick = null;
+			this.btn9.onclick = null;
+            this.btnDot.onclick = null;
+			this.btnPlus.onclick = null;
+			this.btnMinus.onclick = null;
+			this.btnMult.onclick = null;
+			this.btnDiv.onclick = null;
+			this.btnEqual.onclick = null;
+			this.btnClear.onclick = null;
+		}
+
+
+}
+
+//registro el componente
+customElements.define('x-calculadora', Calculadora );
+
+</script>
+
+</html>
