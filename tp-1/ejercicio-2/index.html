@@ -1,0 +1,128 @@
+<!--Construya un programa que solicite al usuario su fecha de nacimiento
+ y que luego valide si la cadena de texto ingresada es realmente una fecha. 
+ En caso de que no, deberá mostrar un mensaje de error notificando que el texto suministrado es inválido 
+ y que vuelva a pedir la fecha hasta que sea válida. Cada error deberá incluir el número de reintentos. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>Fecha</title>
+
+<style>
+    body 
+    {
+        font-family: Arial;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+    }
+
+</style>
+</head>
+
+<body>
+
+    <x-date-validator></x-date-validator>
+
+</body>
+<script>
+
+class DateValidator extends HTMLElement
+{
+    constructor()
+    {
+        super();
+
+        //contador
+        this.attempts = 0;
+
+        //los inputs
+        this.inputDate = document.createElement('input');
+        this.inputDate.type = 'text';
+        this.inputDate.placeholder = 'DD/MM/AAAA';
+
+        //boton
+        this.btnValidate = document.createElement('button');
+        this.btnValidate.innerText = 'Presione para validar.'
+
+        //resultado o error
+        this.result = document.createElement('p');
+
+        //components
+        this.appendChild(this.inputDate);
+        this.appendChild(document.createElement('br'));
+        this.appendChild(document.createElement('br'));
+        this.appendChild(this.btnValidate);
+        this.appendChild(this.result);
+
+    }
+
+    isValidDate(dateString)
+    {
+        //aca verifico que el formato sea DD/MM/AAAA 
+        let birthDate = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!birthDate.test(dateString))
+        {
+            return false;
+        }
+
+        //separo el string en dia, mes, año
+        let parts = dateString.split('/');      //separo el string
+        let day = parseInt(parts[0]);       //parseInt convierte string a int
+        let month = parseInt(parts[1]);
+        let year = parseInt(parts[2]);
+
+        if (month < 1 || month > 12)
+        {
+            return false;
+        }
+
+        //verifico que el dia exista
+        let date = new Date(year, month - 1, day);
+        if (date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    onBtnValidateClick()
+    {
+        let dateString = this.inputDate.value.trim();
+
+        if (!this.isValidDate(dateString))
+        {
+            this.attempts++;
+            this.result.style.color = 'red';
+            this.result.innerText = `Fecha inválida. Reintento número: ${this.attempts}. Ingresá el formato DD/MM/AAAA.`;
+            this.inputDate.value = '';
+        }
+        else
+        {
+            this.result.style.color = 'green';
+            this.result.innerText = `¡Fecha válida! Tu fecha de nacimiento es: ${dateString}`;
+            this.attempts = 0;
+        }
+    }
+
+connectedCallback()
+	{
+        this.btnValidate.onclick = this.onBtnValidateClick.bind(this);
+    }
+
+disconnectedCallback()
+	{
+        this.btnValidate.onclick = null;
+    }
+}
+
+customElements.define('x-date-validator', DateValidator);
+
+</script>
+
+</html>

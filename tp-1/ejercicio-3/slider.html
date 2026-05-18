@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>Sliders</title>
+
+<style>
+    body 
+    {
+        font-family: Arial;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+    }
+
+    input[type="range"] 
+    {
+        writing-mode: vertical-lr;
+        direction: rtl;
+        height: 150px;
+    }
+
+    x-sliders 
+    {
+        display: flex;
+        gap: 10px;
+    }
+    
+    x-sliders > div 
+    {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 60px;
+    }
+
+</style>
+</head>
+
+<body>
+
+    <x-sliders></x-sliders>
+
+</body>
+<script>
+
+class Sliders extends HTMLElement
+{
+    constructor()
+    {
+    
+        super();
+
+         this.data = {};
+
+       let frequencies = ['32Hz', '65Hz', '130Hz', '260Hz', '500Hz', '1k', '2k', '4k', '8.3k', '16.5k'];
+
+       frequencies.forEach(freq =>
+        {
+            //el slider
+           let slider = document.createElement('input');
+           slider.type = 'range';
+           slider.min = -12;
+           slider.max = 12;
+           slider.value = 0;
+
+            //contenedor de cada banda
+            let bandDiv = document.createElement('div');
+
+            //etiqueta de arriba que tiene la frecuencia
+            let label = document.createElement('p');
+            label.innerText = freq;
+
+            //etiqueta de abajo con el valor del slider
+            let valueLabel = document.createElement('p');
+            valueLabel.innerText = '+0dB';
+
+            this.data[freq] =
+            {
+                value: 0,
+                slider: slider,
+                valueLabel: valueLabel
+            };
+
+            //meto todo al div
+            bandDiv.appendChild(label);
+            bandDiv.appendChild(slider);
+            bandDiv.appendChild(valueLabel);
+
+            // agrego el div al componente
+            this.appendChild(bandDiv);
+
+            //los valores se actualizan cuando se mueve el slider
+            slider.oninput = () =>
+            {
+                let value = parseInt(slider.value);
+                this.data[freq].value = value;
+                
+                if (value >= 0)
+                {
+                    valueLabel.innerText = `+${value}dB`;
+                }
+                else
+                {
+                    valueLabel.innerText = `${value}dB`;
+                }
+            };
+
+        });
+    }
+
+
+    getData()
+    {
+        return this.data;
+    }
+
+    setData(newData)
+    {
+        for(let freq in newData)
+        {
+            //actualizo valores en this.data
+            this.data[freq].value = newData[freq];
+
+            //mmover el slider
+            this.data[freq].slider.value = newData[freq];
+
+            //actualizo el texto de abajo
+            if (newData[freq] >= 0)
+            {
+                this.data[freq].valueLabel.innerText = `+${newData[freq]}dB`;
+            }
+            else
+            {
+                this.data[freq].valueLabel.innerText = `${newData[freq]}dB`;
+            }
+        }
+    }
+
+ connectedCallback()
+        {
+           
+        }
+
+    disconnectedCallback()
+        {
+           
+        }
+}
+customElements.define('x-sliders', Sliders);
+
+</script>
+
+</html>

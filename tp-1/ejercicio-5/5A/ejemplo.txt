@@ -1,0 +1,65 @@
+let datos=
+{
+    datos de la empresa:
+    {
+        razon social:
+        .
+        .
+        condicionFrenteIva: "responsable inscripto"
+    }
+
+    tipo de factura: "B"
+    detalle:
+    [
+        {
+            codigo:
+            producto:
+            cantidad:
+            unidadMedida
+            pesoUnit
+            .
+            .
+            subtotal
+        }
+    ]
+}
+
+class Factura extends HTMLElements
+{
+    constructor()
+    {
+        super;
+
+        this.data = new FacturaDatos();
+
+        this.factura = document.createELement('table');
+        (tr) this.encabezado = this.factura.insert row()
+        this.cuerpo = this.facutra.insert row()
+        this.pie = this.facutra.insert row()
+
+        this.tipoFactura = this.encabezado.insert Cell()
+        this.tipoFactura.innerText = this.data.tipoFactura;
+                <td>
+    }
+} 
+
+<tr>
+   <td>  B  </td>
+</tr>    
+
+
+//identificar que es formulario?
+
+this.detalleFactura = document.createELement('table');
+
+this.cuerpo.appendchild(this.detalleFactura);
+
+
+
+agregarItemDetalle(item)
+row = this.agregarFactura.insert row()
+col = row.insert Cell()
+col.appendchild.innerText = item
+
+
+

@@ -1,0 +1,115 @@
+<!--A partir del ejemplo proporcionado en la página https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_chat&authuser=0 
+Nótese que se trata de una representación HTML/CSS/JS que denota una sección de intercambio de mensajes de Chat. 
+Construya una abstracción mediante WebComponents que encapsule esa interfaz y diseñe un método que permita insertar los mensajes intercambiados.-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>Chat</title>
+
+<style>
+    body 
+    {
+        font-family: Arial;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+    }
+
+</style>
+</head>
+
+<body>
+
+    <x-chat></x-chat>
+
+</body>
+<script>
+
+    class Chat extends HTMLElement
+    {
+        constructor()
+
+        {
+            super();
+
+            //el titulo
+            this.chatTitle = document.createElement('h2');
+            this.chatTitle.innerText = 'Chat Messages';
+
+            //contenedor
+            this.chatBubble = document.createElement('div');
+            this.chatBubble.style.maxWidth = '800px';
+            this.chatBubble.style.width = '100%';
+
+            this.appendChild(this.chatTitle);
+            this.appendChild(this.chatBubble);
+    }
+
+
+    addMessage(text, send, time)
+    {
+        // contenedor del mensaje
+        let container = document.createElement('div');
+        container.style.border = '2px solid #dedede';
+        container.style.backgroundColor = '#f1f1f1';
+        container.style.borderRadius = '5px';
+        container.style.padding = '10px';
+        container.style.margin = '10px 0';
+        container.style.overflow = 'hidden';            // para que el float ande bien
+
+        // si es other, cambia el estilo a oscuro
+        if (send === 'reciever')
+        {
+            container.style.borderColor = '#ccc';
+            container.style.backgroundColor = '#ddd';
+        }
+
+        // el texto del mensaje
+        let message = document.createElement('p');
+        message.innerText = text;
+        message.style.margin = '0';
+
+        // la hora
+        let timeSpan = document.createElement('span');
+        timeSpan.innerText = time;
+        timeSpan.style.color = '#aaa';
+
+        if (send === 'sender')
+        {
+            timeSpan.style.float = 'right';
+        }
+        else
+        {
+            timeSpan.style.float = 'left';
+            timeSpan.style.color = '#999';
+        }
+
+        container.appendChild(message);
+        container.appendChild(timeSpan);
+
+        this.chatBubble.appendChild(container);
+    }
+
+
+        connectedCallback()
+        {
+
+            this.addMessage('Hello. How are you today?', 'sender', '11:00');
+            this.addMessage("Hey! I'm fine. Thanks for asking!", 'reciever', '11:01');
+            this.addMessage('Sweet! So, what do you wanna do today?', 'sender', '11:02');
+            this.addMessage('Nah, I dunno. Play soccer.. or learn more coding perhaps?', 'reciever', '11:05');
+        }
+        disconnectedCallback()
+        {
+        }
+
+    }
+    customElements.define('x-chat', Chat);
+
+</script>
+
+</html>   

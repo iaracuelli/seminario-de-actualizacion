@@ -1,0 +1,230 @@
+<!--Construya un programa que solicite al usuario su fecha de nacimiento
+ y que luego valide si la cadena de texto ingresada es realmente una fecha. 
+ En caso de que no, deberá mostrar un mensaje de error notificando que el texto suministrado es inválido 
+ y que vuelva a pedir la fecha hasta que sea válida. Cada error deberá incluir el número de reintentos. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>Fecha</title>
+
+<style>
+    body 
+    {
+        font-family: Arial;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+    }
+
+</style>
+</head>
+
+<body>
+
+    <x-form></x-form>
+
+</body>
+<script>
+
+class Form extends HTMLElement
+{
+    constructor()
+    {
+        super();
+
+        this.formTitle = document.createElement('h2');
+        this.formTitle.innerText = 'FACTURA';
+
+        //los inputs
+        this.inputName = document.createElement('input');
+        this.inputName.type = 'text';
+        this.inputName.placeholder = 'Nombre / razon social';
+
+        this.inputAddress = document.createElement('input');
+        this.inputAddress.type = 'text';
+        this.inputAddress.placeholder = 'Domicilio Comercial';
+
+        this.inputCUIT = document.createElement('input');
+        this.inputCUIT.type = 'text';
+        this.inputCUIT.placeholder = 'CUIT';
+
+        this.inputCondition = document.createElement('input');
+        this.inputCondition.type = 'text';
+        this.inputCondition.placeholder = 'Condicion frente al IVA';
+
+        this.inputDate = document.createElement('input');
+        this.inputDate.type = 'text';
+        this.inputDate.placeholder = 'DD/MM/AAAA';
+
+        this.inputPeriodFrom = document.createElement('input');
+        this.inputPeriodFrom.type = 'text';
+        this.inputPeriodFrom.placeholder = 'Periodo facturado desde:';
+
+        this.inputPeriodUntil = document.createElement('input');
+        this.inputPeriodUntil.type = 'text';
+        this.inputPeriodUntil.placeholder = 'Periodo facturado hasta:';
+
+
+        //boton
+        this.btnAddProduct = document.createElement('button');
+        this.btnAddProduct.innerText = 'Agregar un producto.'
+
+        this.btnInvoice = document.createElement('button');
+        this.btnInvoice.innerText = 'Generar Factura.'
+
+        
+        this.productContainer = document.createElement('div');
+        
+
+
+        //components
+        this.appendChild(this.formTitle);
+        this.appendChild(this.inputName);
+        this.appendChild(this.inputAddress);
+        this.appendChild(this.inputCUIT);
+        this.appendChild(this.inputCondition);
+        this.appendChild(this.inputDate);
+        this.appendChild(this.inputPeriodFrom);
+        this.appendChild(this.inputPeriodUntil);
+        this.appendChild(this.productContainer);
+        this.appendChild(this.btnAddProduct);
+        this.appendChild(this.btnInvoice);
+
+
+    }
+
+    onBtnInvoiceClick()
+    {
+        let name = this.inputName.value.trim();
+        let address = this.inputAddress.value.trim();
+        let cuit = this.inputCUIT.value.trim();
+        let condition = this.inputCondition.value.trim();
+        let date = this.inputDate.value.trim();
+        let periodFrom = this.inputPeriodFrom.value.trim();
+        let periodUntil = this.inputPeriodUntil.value.trim();
+
+       
+        let invoice = document.createElement('table');
+
+        //la B
+        let header = invoice.insertRow();
+        let cellType = header.insertCell();
+        cellType.innerText = 'B';
+        cellType.style.textAlign = 'center';
+        cellType.style.fontSize = '40px';
+        cellType.style.fontWeight = 'bold';
+        cellType.style.width = '80px';
+
+        //el header FACTURA y fecha
+        let cellInvoice = header.insertCell();
+        cellInvoice.innerText = `FACTURA - Fecha: ${date}`;
+        cellInvoice.style.fontSize = '20px';
+        cellInvoice.style.fontWeight = 'bold';
+
+        //datos
+        let data = invoice.insertRow();
+        let dataCell = data.insertCell();
+        dataCell.colSpan = 2;
+        dataCell.innerHTML = `Razón Social: ${name} <br> CUIT: ${cuit} <br>
+                                Domicilio: ${address} <br> Condicion frente al IVA: ${condition}
+                                Periodo: ${periodFrom} - ${periodUntil}`;
+
+        //detalle
+        let detail = invoice.insertRow();
+        let detailCell = detail.insertCell();
+        detailCell.colSpan = 2;
+
+        let detailTable = document.createElement('table');
+        let detailHeader = detailTable.insertRow();
+        detailHeader.insertCell().innerText = 'Producto';
+        detailHeader.insertCell().innerText = 'Cantidad';
+        detailHeader.insertCell().innerText = 'Precio Unit.';
+        detailHeader.insertCell().innerText = 'Subtotal';
+
+
+        let productRows = this.productContainer.querySelectorAll('div');
+
+        let grandTotal = 0;
+        productRows.forEach(row => {
+            let inputs = row.querySelectorAll('input');
+            let product = inputs[0].value.trim();
+            let quantity = parseFloat(inputs[1].value);
+            let price = parseFloat(inputs[2].value);
+            let total = quantity * price;       //calculo para saber el total
+            grandTotal += total;
+
+             let detailRow = detailTable.insertRow();
+            detailRow.insertCell().innerText = product;
+            detailRow.insertCell().innerText = quantity;
+            detailRow.insertCell().innerText = price;
+            detailRow.insertCell().innerText = total;
+
+        });
+        
+        detailCell.appendChild(detailTable);
+
+        //el pie
+        let foot = invoice.insertRow();
+        foot.insertCell();
+        let footCell = foot.insertCell();
+        footCell.innerText =  `TOTAL: ${grandTotal}`;
+        footCell.style.textAlign = 'right';
+        footCell.style.fontWeight = 'bold';
+        footCell.style.fontSize = '16px';
+
+        let tab = window.open();
+        tab.document.write(`
+            <style>
+                table { border-collapse: collapse; width: 100%; }
+                td, th { border: 1px solid black; padding: 8px; }
+            </style>
+            ${invoice.outerHTML}
+        `);
+    }
+
+    onBtnAddProductClick()
+    {
+        let productRow = document.createElement('div');
+
+        let inputProduct = document.createElement('input');
+        inputProduct.type = 'text';
+        inputProduct.placeholder = 'Productos / Servicio';
+
+        let inputQuantity = document.createElement('input');
+        inputQuantity.type = 'text';
+        inputQuantity.placeholder = 'Cantidad';
+
+        let inputPrice = document.createElement('input');
+        inputPrice.type = 'text';
+        inputPrice.placeholder = 'precio unitario';
+
+        productRow.appendChild(inputProduct);
+        productRow.appendChild(inputQuantity);
+        productRow.appendChild(inputPrice);
+
+        this.productContainer.appendChild(productRow);
+
+    }
+
+    connectedCallback()
+        {
+            this.btnInvoice.onclick = this.onBtnInvoiceClick.bind(this);
+            this.btnAddProduct.onclick = this.onBtnAddProductClick.bind(this);
+        }
+
+    disconnectedCallback()
+        {
+            this.btnInvoice.onclick = null;
+            this.btnAddProduct.onclick = null;
+        }
+}
+
+customElements.define('x-form', Form);
+
+</script>
+
+</html>

@@ -1,0 +1,326 @@
+<!--Desarrolle un WebComponent que represente toda la información de los datos metereológicos de Mar del Plata 
+tal como se muestra en la imagen. En este caso, considere agregar un método al WebComponent que le permita 
+obtener el conjunto de todos los promedios de todas las temperaturas representadas-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>Clima</title>
+
+<style>
+    body 
+    {
+        font-family: Arial;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+    }
+    table {
+    border-collapse: collapse;
+    }
+
+    td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+    }
+
+</style>
+</head>
+
+<body>
+
+    <x-climate></x-climate>
+
+</body>
+<script>
+
+class Climate extends HTMLElement
+{
+    constructor()
+    {
+        super();
+ 
+        this.tableContainer = document.createElement('div');
+        this.table = document.createElement('table');
+
+
+        this.tableContainer.appendChild(this.table);
+        this.appendChild(this.tableContainer);
+
+        this.rowHeader = document.createElement('tr');
+        this.rowHeader.insertCell().innerText= 'Parámetros climáticos promedio de Mar del Plata, BA (1961 - 1990)';
+        this.table.appendChild(this.rowHeader);
+
+
+        //MESES
+        this.rowMonths = document.createElement('tr');
+
+        let monthsData = ['Mes', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Anual'];
+        monthsData.forEach(value => this.rowMonths.insertCell().innerText = value);
+
+        this.table.appendChild(this.rowMonths);
+
+
+        //temperatura maxima absoluta
+        this.rowAbsMaxT = document.createElement('tr');
+
+        let absMaxTData = ['Temp. Máx. abs. (°C)', 42.4, 38.1, 36.3, 32.5, 27.4, 22.2, 27.7, 24.7, 28.8, 34.4, 35.7, 39.4, 39.4];
+        absMaxTData.forEach((value, index) =>
+        {
+            let cell = this.rowAbsMaxT.insertCell();
+            cell.innerText = value;
+            if (index > 0)
+            {
+                cell.style.backgroundColor = this.getColor(value);
+            }
+        });
+
+      
+        this.table.appendChild(this.rowAbsMaxT);
+
+
+        //temperatura maxima media
+        this.rowAvgMaxT = document.createElement('tr');
+
+        let avgMaxTData = ['Temp. Máx. media (°C)', 26.3, 25.8, 23.7, 20.5, 16.8, 13.8, 13.1, 14.4, 16.0, 18.5, 21.7, 24.4, 19.6];
+        avgMaxTData.forEach((value, index) =>
+        {
+            let cell = this.rowAvgMaxT.insertCell();
+            cell.innerText = value;
+            if (index > 0)
+            {
+                cell.style.backgroundColor = this.getColor(value);
+            }
+        });
+
+
+        
+        this.table.appendChild(this.rowAvgMaxT);
+
+
+        //temperatura media
+        this.rowAvgT = document.createElement('tr');
+
+        let avgTData = ['Temp. media °C', 20.3, 19.9, 18.0, 14.6, 11.3, 8.5, 8.1, 8.9, 10.5, 13.1, 15.9, 18.5, 14.0];
+        avgTData.forEach((value, index) =>
+        {
+            let cell = this.rowAvgT.insertCell();
+            cell.innerText = value;
+            if (index > 0)
+            {
+                cell.style.backgroundColor = this.getColor(value);
+            }
+        });
+
+        
+
+        this.table.appendChild(this.rowAvgT);
+
+        //temperatura minima media
+        this.rowAvgMinT = document.createElement('tr');
+
+        let avgMinT = ['Temp. Mín. media (°C)', 14.3, 14.1, 12.5, 9.1, 6.4, 4.1, 3.8, 4.0, 5.3, 7.6, 10.1, 12.7, 8.7];
+        avgMinT.forEach((value, index) =>
+        {
+            let cell = this.rowAvgMinT.insertCell();
+            cell.innerText = value;
+            if (index > 0)
+            {
+                cell.style.backgroundColor = this.getColor(value);
+            }
+        });
+
+       
+
+        this.table.appendChild(this.rowAvgMinT);
+
+
+        //temperatura minima absoluta
+        this.rowAbsMinT = document.createElement('tr');
+
+        let absMinT = ['Temp. mín. abs. (°C)', 4.7, 1.2, 1.9, -1.0, -3.0, -5.5, -9.3, -6.4, -5.5, -3.0, -2.0, -0.2, -9.3];
+        absMinT.forEach((value, index) =>
+        {
+            let cell = this.rowAbsMinT.insertCell();
+            cell.innerText = value;
+            if (index > 0)
+            {
+                cell.style.backgroundColor = this.getColor(value);
+            }
+        });
+
+        
+
+        this.table.appendChild(this.rowAbsMinT);
+
+        
+        //precipitacion total
+        this.rowTotalPrecip = document.createElement('tr');
+
+        let totalPrecip = ['Precipitación total (mm)', 100.1, 72.8, 107.0, 73.3, 73.5, 54.9, 58.9, 64.0, 56.4, 83.4, 75.3, 104.0, 923.6];
+        totalPrecip.forEach(value => this.rowTotalPrecip.insertCell().innerText = value);
+
+        this.table.appendChild(this.rowTotalPrecip);
+
+        //dias de precipitacion
+        this.rowPrecipDays = document.createElement('tr');
+
+        let precipDays = ['Días de precipitaciones (≥ 0.1mm)', 9, 8, 9, 9, 9, 9, 9, 8, 7, 10, 10, 10, 107];
+        precipDays.forEach(value => this.rowPrecipDays.insertCell().innerText = value);
+
+        this.table.appendChild(this.rowPrecipDays);
+
+        //horas de sol
+        this.rowSun = document.createElement('tr');
+
+        let sun = ['Horas de sol', 288.3, 234.5, 232.5, 195.0, 167.4, 120.0, 127.1, 164.3, 174.0, 210.8, 222.0, 269.7, 2405.6];
+        sun.forEach(value => this.rowSun.insertCell().innerText = value);
+
+        this.table.appendChild(this.rowSun);
+
+        //humedad relativa
+        this.rowHumidity = document.createElement('tr');
+
+        let humidity = ['Humedad relativa (%)', 76, 77, 79, 81, 83, 84, 81, 81, 80, 80, 77, 76, 80];
+        humidity.forEach(value => this.rowHumidity.insertCell().innerText = value);
+
+        this.table.appendChild(this.rowHumidity);
+
+
+        //boton 
+        this.btnAverage = document.createElement('button');
+        this.btnAverage.innerText = 'Traer Todos los Promedios.'
+
+        this.tableContainer.appendChild(this.btnAverage);
+
+
+        //FARENHEIT
+        this.btnConvert = document.createElement('button');
+        this.btnConvert.innerText = 'Ver en Fahrenheit (°F)';
+        this.tableContainer.appendChild(this.btnConvert);
+
+        //variable que me dice en que estamos
+        this.isCelsius = true;      //arranca en °C
+       
+    }
+
+    getColor(value)
+        {
+            if (value >= 30) return '#d73027';      // rojo fuerte
+            if (value >= 20) return '#f46d43';      // naranja
+            if (value >= 10) return '#fdae61';      // amarillo naranja
+            if (value >= 0)  return '#fee090';      // amarillo claro
+            if (value >= -5)  return '#abd9e9';      // celeste
+            return '#4575b4';                        // azul (negativos)
+        }
+
+    onBtnAverageClick()
+    {
+        alert(
+        `Promedios anuales de temperaturas:
+        Temp. Máx. abs: ${this.rowAbsMaxT.cells[13].innerText} °C
+        Temp. Máx. media: ${this.rowAvgMaxT.cells[13].innerText} °C
+        Temp. media: ${this.rowAvgT.cells[13].innerText} °C
+        Temp. Mín. media: ${this.rowAvgMinT.cells[13].innerText} °C
+        Temp. Mín. abs: ${this.rowAbsMinT.cells[13].innerText} °C
+        `);
+    }
+
+
+    onBtnConvertClick()
+    {
+        if(this.isCelsius)
+        {
+            //estoy en °C, convierto a °F
+            this.btnConvert.innerText = 'Ver en Celsius (°C)';
+            this.isCelsius = false;
+
+            //°F = (°C × 9/5) + 32
+            // recorro todas las celdas de la fila, saltando la primera (index 0)
+            for (let cel = 1; cel < this.rowAbsMaxT.cells.length; cel++)
+            {
+                let celsius = parseFloat(this.rowAbsMaxT.cells[cel].innerText);
+                this.rowAbsMaxT.cells[cel].innerText = ((celsius * 9/5) + 32).toFixed(1);
+            }
+    
+            for (let cel = 1; cel < this.rowAvgMaxT.cells.length; cel++)
+            {
+                let celsius = parseFloat(this.rowAvgMaxT.cells[cel].innerText);
+                this.rowAvgMaxT.cells[cel].innerText = ((celsius * 9/5) + 32).toFixed(1);
+            }
+   
+            for (let cel = 1; cel < this.rowAvgT.cells.length; cel++)
+            {
+                let celsius = parseFloat(this.rowAvgT.cells[cel].innerText);
+                this.rowAvgT.cells[cel].innerText = ((celsius * 9/5) + 32).toFixed(1);
+            }
+ 
+            for (let cel = 1; cel < this.rowAvgMinT.cells.length; cel++)
+            {
+                let celsius = parseFloat(this.rowAvgMinT.cells[cel].innerText);
+                this.rowAvgMinT.cells[cel].innerText = ((celsius * 9/5) + 32).toFixed(1);
+            }
+   
+            for (let cel = 1; cel < this.rowAbsMinT.cells.length; cel++)
+            {
+                let celsius = parseFloat(this.rowAbsMinT.cells[cel].innerText);
+                this.rowAbsMinT.cells[cel].innerText = ((celsius * 9/5) + 32).toFixed(1);
+            }
+        }
+        else
+        {
+            //estoy en °F, convierto a °C
+            this.btnConvert.innerText = 'Ver en Fahrenheit (°F)';
+            this.isCelsius = true;
+
+            //°C = (°F - 32) × 5/9
+            for (let cel = 1; cel < this.rowAbsMaxT.cells.length; cel++)
+            {
+                let fahrenheit = parseFloat(this.rowAbsMaxT.cells[cel].innerText);
+                this.rowAbsMaxT.cells[cel].innerText = ((fahrenheit - 32) * 5/9).toFixed(1);
+            }
+            for (let cel = 1; cel < this.rowAvgMaxT.cells.length; cel++)
+            {
+                let fahrenheit = parseFloat(this.rowAvgMaxT.cells[cel].innerText);
+                this.rowAvgMaxT.cells[cel].innerText = ((fahrenheit - 32) * 5/9).toFixed(1);
+            }
+            for (let cel = 1; cel < this.rowAvgT.cells.length; cel++)
+            {
+                let fahrenheit = parseFloat(this.rowAvgT.cells[cel].innerText);
+                this.rowAvgT.cells[cel].innerText = ((fahrenheit - 32) * 5/9).toFixed(1);
+            }
+            for (let cel = 1; cel < this.rowAvgMinT.cells.length; cel++)
+            {
+                let fahrenheit = parseFloat(this.rowAvgMinT.cells[cel].innerText);
+                this.rowAvgMinT.cells[cel].innerText = ((fahrenheit - 32) * 5/9).toFixed(1);
+            }
+            for (let cel = 1; cel < this.rowAbsMinT.cells.length; cel++)
+            {
+                let fahrenheit = parseFloat(this.rowAbsMinT.cells[cel].innerText);
+                this.rowAbsMinT.cells[cel].innerText = ((fahrenheit - 32) * 5/9).toFixed(1);
+            }
+        }
+    }
+
+
+    connectedCallback()
+        {
+           this.btnAverage.onclick = this.onBtnAverageClick.bind(this);
+           this.btnConvert.onclick = this.onBtnConvertClick.bind(this);
+        }
+
+    disconnectedCallback()
+        {
+           this.btnAverage.onclick = null;
+           this.btnConvert.onclick = null;
+        }
+}
+customElements.define('x-climate', Climate);
+
+</script>
+
+</html>
