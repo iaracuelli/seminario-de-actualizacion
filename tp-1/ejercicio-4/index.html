@@ -23,9 +23,6 @@ Construya una abstracción mediante WebComponents que encapsule esa interfaz y d
 </head>
 
 <body>
-
-    <x-chat></x-chat>
-
 </body>
 <script>
 
@@ -94,21 +91,40 @@ Construya una abstracción mediante WebComponents que encapsule esa interfaz y d
         this.chatBubble.appendChild(container);
     }
 
+    sendMessage(text, time)
+    {
+        this.addMessage(text, 'sender', time);
+    }
 
-        connectedCallback()
-        {
+    receiveMessage(text, time)
+    {
+        this.addMessage(text, 'receiver', time);
+    }
 
-            this.addMessage('Hello. How are you today?', 'sender', '11:00');
-            this.addMessage("Hey! I'm fine. Thanks for asking!", 'reciever', '11:01');
-            this.addMessage('Sweet! So, what do you wanna do today?', 'sender', '11:02');
-            this.addMessage('Nah, I dunno. Play soccer.. or learn more coding perhaps?', 'reciever', '11:05');
-        }
-        disconnectedCallback()
-        {
-        }
+    connectedCallback()
+    {      
+    }
+    disconnectedCallback()
+    {
+    }
 
     }
     customElements.define('x-chat', Chat);
+
+    
+    function main()
+    {
+        let chat = new Chat();
+        document.body.appendChild(chat);
+
+        chat.sendMessage('Hello. How are you today?', '11:00');
+        chat.receiveMessage("Hey! I'm fine. Thanks for asking!", '11:01');
+        chat.sendMessage('Sweet! So, what do you wanna do today?', '11:02');
+        chat.receiveMessage('Nah, I dunno. Play soccer.. or learn more coding perhaps?', '11:05');
+
+    }
+
+window.onload = main;
 
 </script>
 

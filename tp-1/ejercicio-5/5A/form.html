@@ -24,9 +24,6 @@
 </head>
 
 <body>
-
-    <x-form></x-form>
-
 </body>
 <script>
 
@@ -129,9 +126,28 @@ class Form extends HTMLElement
         let data = invoice.insertRow();
         let dataCell = data.insertCell();
         dataCell.colSpan = 2;
-        dataCell.innerHTML = `Razón Social: ${name} <br> CUIT: ${cuit} <br>
-                                Domicilio: ${address} <br> Condicion frente al IVA: ${condition}
-                                Periodo: ${periodFrom} - ${periodUntil}`;
+        
+        let pName = document.createElement('p');
+        pName.innerText = `Razón Social: ${name}`;
+
+        let pCuit = document.createElement('p');
+        pCuit.innerText = `Cuit: ${cuit}`;
+
+        let pAddress = document.createElement('p');
+        pAddress.innerText = `Domicilio: ${address}`;
+
+        let pCondition = document.createElement('p');
+        pCondition.innerText = `Condición frente al IVA: ${condition}`;
+
+        let pPeriod = document.createElement('p');
+        pPeriod.innerText = `Periodo: ${periodFrom} - ${periodUntil}`;
+
+        dataCell.appendChild(pName);
+        dataCell.appendChild(pCuit);
+        dataCell.appendChild(pAddress);
+        dataCell.appendChild(pCondition);
+        dataCell.appendChild(pPeriod);
+
 
         //detalle
         let detail = invoice.insertRow();
@@ -224,6 +240,14 @@ class Form extends HTMLElement
 }
 
 customElements.define('x-form', Form);
+
+function main()
+{
+    let form = new Form();
+    document.body.appendChild(form);
+}
+
+window.onload = main;
 
 </script>
 

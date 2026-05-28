@@ -25,8 +25,6 @@
 
 <body>
 
-    <x-date-validator></x-date-validator>
-
 </body>
 <script>
 
@@ -122,6 +120,14 @@ disconnectedCallback()
 }
 
 customElements.define('x-date-validator', DateValidator);
+
+function main()
+{
+    let dateValidator = new DateValidator();
+    document.body.appendChild(dateValidator);
+}
+
+window.onload = main;
 
 </script>
 

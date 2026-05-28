@@ -40,9 +40,6 @@
 </head>
 
 <body>
-
-    <x-sliders></x-sliders>
-
 </body>
 <script>
 
@@ -91,23 +88,6 @@ class Sliders extends HTMLElement
 
             // agrego el div al componente
             this.appendChild(bandDiv);
-
-            //los valores se actualizan cuando se mueve el slider
-            slider.oninput = () =>
-            {
-                let value = parseInt(slider.value);
-                this.data[freq].value = value;
-                
-                if (value >= 0)
-                {
-                    valueLabel.innerText = `+${value}dB`;
-                }
-                else
-                {
-                    valueLabel.innerText = `${value}dB`;
-                }
-            };
-
         });
     }
 
@@ -139,17 +119,46 @@ class Sliders extends HTMLElement
         }
     }
 
+    onSliderInput(freq)
+    {
+        let value = parseInt(this.data[freq].slider.value);
+        this.data[freq].value = value;
+
+        if (value >= 0)
+        {
+            this.data[freq].valueLabel.innerText = `+${value}dB`;
+        }
+        else
+        {
+            this.data[freq].valueLabel.innerText = `${value}dB`;
+        }
+    }
+
  connectedCallback()
         {
-           
+           for (let freq in this.data)
+           {
+            this.data[freq].slider.oninput = () => this.onSliderInput(freq);
+           }
         }
 
     disconnectedCallback()
         {
-           
+           for (let freq in this.data)
+           {
+            this.data[freq].slider.oninput = null;
+           }
         }
 }
 customElements.define('x-sliders', Sliders);
+
+function main()
+{
+    let sliders = new Sliders();
+    document.body.appendChild(sliders);
+}
+
+window.onload = main;
 
 </script>
 

@@ -17,7 +17,6 @@
 </head>
 
 <body>
-    <x-greeting></x-greeting>
 </body>
 
 <script>
@@ -86,6 +85,14 @@ class Greeting extends HTMLElement
 }
 
 customElements.define('x-greeting', Greeting);
+
+function main()
+{
+    let greeting = new Greeting();
+    document.body.appendChild(greeting);
+}
+
+window.onload = main;
 
 </script>
 

@@ -32,9 +32,6 @@ obtener el conjunto de todos los promedios de todas las temperaturas representad
 </head>
 
 <body>
-
-    <x-climate></x-climate>
-
 </body>
 <script>
 
@@ -224,6 +221,15 @@ class Climate extends HTMLElement
         }
 }
 customElements.define('x-climate', Climate);
+
+function main()
+{
+    let climate = new Climate();
+    document.body.appendChild(climate);
+}
+
+window.onload = main;
+
 
 </script>
 
