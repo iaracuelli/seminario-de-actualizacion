@@ -276,6 +276,9 @@ class WCApplicationView extends HTMLElement
         this.appendChild(this.content);
 
         this.content.appendChild(this.footer);
+
+        this._onSearchIconClick = this.onSearchIconClick.bind(this);
+
     }
 
     onSearchIconClick()
@@ -285,7 +288,6 @@ class WCApplicationView extends HTMLElement
 
     connectedCallback()
     {
-        this._onSearchIconClick = this.onSearchIconClick.bind(this);
         this.navbar.querySelector('.w3-display-right').addEventListener('click', this._onSearchIconClick);
     }
 
