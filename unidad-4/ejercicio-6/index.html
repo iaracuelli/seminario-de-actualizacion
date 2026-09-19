@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" />
+<title>Ejercicios Unidad 4</title>
+<meta name="generator" content="Geany 2.0" />
+<script src="../MVCCanvas.js"></script>
+<script src="ejercicio-6.js"></script>
+</head>
+
+<body>
+
+</body>
+
+<script>
+
+function main()
+{
+	let btnEj6 = document.createElement('button');
+	let btnClear = document.createElement('button');
+	let myView = new View();
+	let myModel = new Model();
+	let myController = new Controller(myView, myModel);
+    myController.enable();
+
+	btnEj6.innerText = 'Ejercicio 6';
+	btnEj6.onclick = myController._loadFigures.bind(myController);
+
+
+	btnClear.innerText = 'Limpiar Canvas';
+	btnClear.onclick = myController._clear.bind(myController);
+
+	document.body.appendChild(btnEj6);
+	document.body.appendChild(btnClear);
+	document.body.appendChild(myView);
+}
+
+window.onload = main;
+
+</script>
+
+</html>

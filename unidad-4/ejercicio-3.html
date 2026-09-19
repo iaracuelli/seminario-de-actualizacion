@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" />
+<title>untitled</title>
+<meta name="generator" content="Geany 2.0" />
+</head>
+
+<body>
+
+</body>
+
+<script type="text/javascript">
+
+class Model extends EventTarget {
+    constructor() {
+        super();
+        
+    }
+   
+    changed() {
+        this.dispatchEvent(new CustomEvent('changed'));
+    }
+}
+
+class View extends HTMLElement {
+    constructor() 
+    {
+        super();
+        this._canvas = document.createElement('canvas');
+        this._canvas.width = 800;
+        this._canvas.height = 600;
+        this._canvas.style.border = '1px solid black';
+
+        let ctx = this._canvas.getContext('2d');
+
+        //let points = [[0,0], [50,0], [25,50]];                         //prueba 1
+        let points = [[0,0], [100,0], [100,100], [0,100]];              //prueba 2
+
+        this.drawPoligon(ctx, points);
+
+        this.appendChild(this._canvas);
+    }
+
+    drawPoligon(ctx, points)
+    {
+        let sumX = 0;
+        let sumY = 0;
+        for (let i = 0; i < points.length; i++)
+        {
+            sumX = sumX + points[i][0];
+            sumY = sumY + points[i][1];
+        }
+
+        let centroideX = sumX / points.length;
+        let centroideY = sumY / points.length;
+
+        let cx = ctx.canvas.width / 2;
+        let cy = ctx.canvas.height / 2;
+
+        let offsetX = cx - centroideX;
+        let offsetY = cy - centroideY;
+
+        ctx.beginPath();
+        ctx.moveTo(points[0][0] + offsetX, points[0][1] + offsetY);
+
+        for (let i = 1; i < points.length; i++)
+        {
+            ctx.lineTo(points[i][0] + offsetX, points[i][1] + offsetY);
+        }
+        
+        ctx.closePath();
+        ctx.stroke(); 
+    }
+    
+    connectedCallback() {
+       console.log('Canvas agregado...')
+    }
+    
+}
+customElements.define('x-view', View);
+
+
+class Controller {
+    constructor(view, model) {
+        this._view = view;
+        this._model = model;
+        this._onModelChanged = this.onModelChanged.bind(this);
+        this._onViewRequest = this.onViewRequest.bind(this);
+    }
+    enable() {
+        this._model.addEventListener('changed', this._onModelChanged);
+        this._view.addEventListener('request', this._onViewRequest);
+    }
+    disable() {
+        this._model.removeEventListener('changed', this._onModelChanged);
+        this._view.removeEventListener('request', this._onViewRequest);
+    }
+    onModelChanged() {
+        
+    }
+    onViewRequest(event) {
+       
+    }
+}
+
+function main() {
+    let myModel = new Model();
+    let myView = new View();
+    let myController = new Controller(myView, myModel);
+    myController.enable();
+    document.body.appendChild(myView);
+}
+window.onload = main;
+
+</script>
+
+</html>
