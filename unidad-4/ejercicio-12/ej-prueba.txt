@@ -1,0 +1,5 @@
+{"type":"circulo","x":200,"y":150,"radio":50}
+
+{"type":"circulo","x":400,"y":150,"radio":40}
+
+{"type":"poligono","x":300,"y":350,"points":[[0,0],[80,0],[40,80]]}

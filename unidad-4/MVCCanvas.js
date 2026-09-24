@@ -20,6 +20,8 @@ class Model extends EventTarget {
         this._figures = [];
         this.changed();
     }
+
+
 }
 
 class View extends HTMLElement {
@@ -32,6 +34,38 @@ class View extends HTMLElement {
         this._canvas.style.border = '1px solid black';
         this.ctx = this._canvas.getContext('2d');
         this.appendChild(this._canvas);
+
+        this._break = document.createElement('br');
+        this.appendChild(this._break);
+
+        let labelLineType = document.createElement('span');
+        labelLineType.innerText = "tipo de linea: ";
+        this.appendChild(labelLineType);
+
+        this._selectLineType = document.createElement('select');
+
+        let option1 = document.createElement('option');
+        option1.value = "solid";
+        option1.innerText = "Solida";
+
+        let option2 = document.createElement('option');
+        option2.value = "dashed";
+        option2.innerText = "Punteada";
+
+        this._selectLineType.appendChild(option1);
+        this._selectLineType.appendChild(option2);
+
+        this.appendChild(this._selectLineType);
+
+        let labelThickness = document.createElement('span');
+        labelThickness.innerText = "  grosor: ";
+        this.appendChild(labelThickness);
+
+        this._selectThickness = document.createElement('input');
+        this._selectThickness.type = "number";
+
+        this.appendChild(this._selectThickness);
+
     }
     
     render( renderFunction ) 
@@ -63,8 +97,14 @@ class Controller {
     constructor(view, model) {
         this._view = view;
         this._model = model;
+        this._drawFunction = null;
         this._onModelChanged = this.onModelChanged.bind(this);
         this._onViewRequest = this.onViewRequest.bind(this);
+    }
+
+     setDrawFunction(drawFunction)
+    {
+        this._drawFunction = drawFunction;
     }
     
     enable() {
@@ -89,16 +129,19 @@ class Controller {
 
     _renderFigures(canvas)
     {
-        ejercicio6(canvas, this._model._figures);
+        this._drawFunction(canvas, this._model._figures);
+        
     }
 
     _loadFigures()
     {
         let text = prompt("Ingresa el JSON:");           
-        let figure = JSON.parse(text);                    
-
-        this._model.addFigure(figure);
+        let figure = JSON.parse(text); 
         
+        figure.lineType = this._view._selectLineType.value;
+        figure.thickness = this._view._selectThickness.value;
+
+        this._model.addFigure(figure); 
     }
 
     _clear()
