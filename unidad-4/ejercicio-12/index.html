@@ -23,7 +23,8 @@ function main()
 	let myModel = new Model();
 	let myController = new Controller(myView, myModel);
 	myController.setDrawFunction(ejercicio12);
-    myController.enable();
+	myController.enable();
+	myView.addLineControls();
 
 	btnEj12.innerText = 'Ejercicio 12';
 	btnEj12.onclick = myController._loadFigures.bind(myController);

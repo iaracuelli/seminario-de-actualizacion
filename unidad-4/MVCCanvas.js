@@ -38,6 +38,10 @@ class View extends HTMLElement {
         this._break = document.createElement('br');
         this.appendChild(this._break);
 
+    }
+
+    addLineControls()
+    {
         let labelLineType = document.createElement('span');
         labelLineType.innerText = "tipo de linea: ";
         this.appendChild(labelLineType);
@@ -65,9 +69,32 @@ class View extends HTMLElement {
         this._selectThickness.type = "number";
 
         this.appendChild(this._selectThickness);
-
     }
     
+    addFigureTypeControl()
+    {
+        
+        this._selectFigureType = document.createElement('select');
+
+        let option3 = document.createElement('option');
+        option3.value = "circulo";
+        option3.innerText = "Circulo";
+
+        let option4 = document.createElement('option');
+        option4.value = "poligono";
+        option4.innerText = "Poligono";
+
+        let option5 = document.createElement('option');
+        option5.value = "cakeGraph";
+        option5.innerText = "Grafico de Torta";
+
+        this._selectFigureType.appendChild(option3);
+        this._selectFigureType.appendChild(option4);
+        this._selectFigureType.appendChild(option5);
+
+        this.appendChild(this._selectFigureType);
+    }
+
     render( renderFunction ) 
     {
         this.clear();
@@ -137,9 +164,17 @@ class Controller {
     {
         let text = prompt("Ingresa el JSON:");           
         let figure = JSON.parse(text); 
-        
-        figure.lineType = this._view._selectLineType.value;
-        figure.thickness = this._view._selectThickness.value;
+
+        if (this._view._selectFigureType)
+        {
+            figure.type = this._view._selectFigureType.value;
+        }
+
+        if (this._view._selectLineType)
+        {
+            figure.lineType = this._view._selectLineType.value;
+            figure.thickness = this._view._selectThickness.value;
+        }
 
         this._model.addFigure(figure); 
     }

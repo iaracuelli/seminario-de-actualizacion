@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" />
+<title>Ejercicios Unidad 4</title>
+<meta name="generator" content="Geany 2.0" />
+</head>
+
+<body>
+
+</body>
+
+<script>
+
+function main()
+{
+    let title = document.createElement('h1');
+    title.innerText = 'LAUNCHER DE EJERCICIOS';
+
+
+	let btnEj6 = document.createElement('button');
+    btnEj6.innerText = 'Ejercicio 6';
+    btnEj6.onclick = function()
+    {
+        window.location.href = "ejercicio-6/index.html";
+    }
+
+	let btnEj12 = document.createElement('button');
+    btnEj12.innerText = 'Ejercicio 12';
+    btnEj12.onclick = function()
+    {
+        window.location.href = "ejercicio-12/index.html";
+    }
+
+	let btnEj19 = document.createElement('button');
+    btnEj19.innerText = 'Ejercicio 19';
+    btnEj19.onclick = function()
+    {
+        window.location.href = "ejercicio-19/index.html";
+    }
+
+	document.body.appendChild(title);
+	document.body.appendChild(btnEj6);
+	document.body.appendChild(btnEj12);
+	document.body.appendChild(btnEj19);
+}
+
+window.onload = main;
+
+</script>
+
+</html>

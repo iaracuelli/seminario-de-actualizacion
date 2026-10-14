@@ -1,0 +1,8 @@
+torta:
+{"slices": [{"label": "Ventas", "percentage": 0.30}, {"label": "Gastos", "percentage": 0.50}, {"label": "Ahorro", "percentage": 0.10}, {"label": "Otros", "percentage": 0.10}]}
+
+circulo:
+{"x": 100, "y": 100, "radio": 40}
+
+poligono:
+{"x": 500, "y": 400, "points": [[0,0],[60,0],[30,60]]}

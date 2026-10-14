@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" />
+<title>untitled</title>
+<meta name="generator" content="Geany 2.0" />
+</head>
+
+<body>
+
+</body>
+
+<script type="text/javascript">
+
+class Model extends EventTarget {
+    constructor() {
+        super();
+        
+    }
+   
+    changed() {
+        this.dispatchEvent(new CustomEvent('changed'));
+    }
+}
+
+class Sliders extends HTMLElement
+{
+    constructor()
+    {
+        super();
+
+        this.data = {};
+
+       let rgb = ['R', 'G', 'B'];
+
+       rgb.forEach(function(freq)
+        {
+            //el slider
+           let slider = document.createElement('input');
+           slider.type = 'range';
+           slider.min = 0;
+           slider.max = 255;
+           slider.value = 0;
+
+            //contenedor de cada banda
+            let bandDiv = document.createElement('div');
+
+            //etiqueta de arriba que tiene la frecuencia
+            let label = document.createElement('p');
+            label.innerText = freq;
+
+            //etiqueta de abajo con el valor del slider
+            let valueLabel = document.createElement('p');
+            valueLabel.innerText = '0';
+
+            this.data[freq] =
+            {
+                value: 0,
+                slider: slider,
+                valueLabel: valueLabel
+            };
+
+            //meto todo al div
+            bandDiv.appendChild(label);
+            bandDiv.appendChild(slider);
+            bandDiv.appendChild(valueLabel);
+
+            // agrego el div al componente
+            this.appendChild(bandDiv);
+        }.bind(this));
+    }
+
+    getData()
+    {
+        return this.data;
+    }
+
+    onSliderInput(freq)
+    {
+        let value = parseInt(this.data[freq].slider.value);
+        this.data[freq].value = value;
+        this.data[freq].valueLabel.innerText = `${value}`;
+
+        this.dispatchEvent(new CustomEvent('changed'));
+    }
+
+    connectedCallback()
+    {
+        for (let freq in this.data)
+        {
+            this.data[freq].slider.oninput = this.onSliderInput.bind(this, freq);
+        }
+    }
+
+    disconnectedCallback()
+    {
+        for (let freq in this.data)
+        {
+            this.data[freq].slider.oninput = null;
+        }
+    }
+}
+customElements.define('x-sliders', Sliders);
+
+
+class View extends HTMLElement {
+    constructor() 
+    {
+        super();
+        this._canvas = document.createElement('canvas');
+        this._canvas.width = 256;
+        this._canvas.height = 256;
+        this._canvas.style.border = '1px solid black';
+
+        let ctx = this._canvas.getContext('2d');
+        this._sliders = new Sliders();
+
+        this.appendChild(this._canvas);
+        this.appendChild(this._sliders);
+
+        this.drawChessBoard(ctx, this._canvas, this._sliders);
+
+        this._sliders.addEventListener('changed', this.drawChessBoard.bind(this, ctx, this._canvas, this._sliders));
+    }
+
+    drawChessBoard(ctx, canvas, sliders)
+    {  
+        let size = 32;
+        let data = sliders.getData();
+        let r = data.R.value;
+        let g = data.G.value;
+        let b = data.B.value;
+        let blackColor = `rgb(${r}, ${g}, ${b})`; 
+    
+        for (let row = 0; row < 8; row++)
+        {
+            for (let col = 0; col < 8; col++)
+            {
+                let isBlack = (row + col) % 2 === 1;
+                
+                if (isBlack)
+                {
+                    ctx.fillStyle = blackColor;
+                }
+                else
+                {
+                    ctx.fillStyle = "white";
+                }
+                
+                ctx.fillRect(col * size, row * size, size, size);
+            }
+        }
+    }
+}
+customElements.define('x-view', View);
+
+
+class Controller {
+    constructor(view, model) {
+        this._view = view;
+        this._model = model;
+        this._onModelChanged = this.onModelChanged.bind(this);
+        this._onViewRequest = this.onViewRequest.bind(this);
+    }
+    enable() {
+        this._model.addEventListener('changed', this._onModelChanged);
+        this._view.addEventListener('request', this._onViewRequest);
+    }
+    disable() {
+        this._model.removeEventListener('changed', this._onModelChanged);
+        this._view.removeEventListener('request', this._onViewRequest);
+    }
+    onModelChanged() {
+        
+    }
+    onViewRequest(event) {
+       
+    }
+}
+
+function main() {
+    let myModel = new Model();
+    let myView = new View();
+    let myController = new Controller(myView, myModel);
+    myController.enable();
+    document.body.appendChild(myView);
+}
+window.onload = main;
+
+</script>
+
+</html>
